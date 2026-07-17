@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// status is a plain String ("draft" | "published") rather than a Prisma
+// enum because SQLite doesn't support native enums; enforced at the
+// application layer. Kept as String even after migrating to Postgres
+// later so no further schema migration is needed.
+model Module {
+  id     String @id @default(cuid())
+  slug   String @unique
+  order  Int
+  title  String
+  summary String
+  status String @default("draft")
+  coverImage String?
+
+  whatIsIt       String @default("")
+  whyUseful      String @default("")
+  steps          Json   @default("[]")
+  tips           Json   @default("[]")
+  commonMistakes Json   @default("[]")
+  usefulLinks    Json   @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("modules")
+}

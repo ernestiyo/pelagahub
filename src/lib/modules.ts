@@ -1,3 +1,6 @@
+import { prisma } from "@/lib/prisma";
+import type { Module as ModuleRow } from "@prisma/client";
+
 export type ModuleStatus = "draft" | "published";
 
 export interface ModuleStep {
@@ -25,95 +28,56 @@ export interface LearningModule {
   title: string;
   summary: string;
   status: ModuleStatus;
+  coverImage: string | null;
   content: ModuleContent;
 }
-
-const emptyContent: ModuleContent = {
-  whatIsIt: "",
-  whyUseful: "",
-  steps: [],
-  tips: [],
-  commonMistakes: [],
-  usefulLinks: [],
-};
 
 // Modul dengan halaman detail custom (bukan lewat template generik 6-bagian
 // di /modul/[slug]) — punya route statis sendiri yang override [slug].
 export const CUSTOM_MODULE_SLUGS = ["mengenal-dunia-digital"];
 
-// Data sementara untuk build & test template (Fase 3). Akan digantikan
-// query database lewat Prisma di Fase 4, lalu diedit dari admin panel di Fase 5.
-export const MODULES: LearningModule[] = [
-  {
-    slug: "mengenal-dunia-digital",
-    order: 1,
-    title: "Mengenal Dunia Digital untuk Usaha Anda",
-    summary:
-      "Kenapa digitalisasi penting untuk usaha Anda, dan langkah pertama yang bisa langsung dicoba hari ini.",
-    status: "published",
-    // Konten modul ini unik/interaktif, dikelola langsung di
-    // src/app/modul/mengenal-dunia-digital/page.tsx dan src/lib/modul1-content.ts,
-    // bukan lewat struktur ModuleContent generik.
-    content: emptyContent,
-  },
-  {
-    slug: "whatsapp-business",
-    order: 2,
-    title: "WhatsApp Business",
-    summary:
-      "Instalasi, profil bisnis, katalog produk, balasan cepat, dan pesan sambutan otomatis.",
-    status: "draft",
-    content: emptyContent,
-  },
-  {
-    slug: "google-business-profile",
-    order: 3,
-    title: "Google Business Profile",
-    summary: "Pendaftaran, tampil di Google Maps, foto, ulasan, dan update informasi toko.",
-    status: "draft",
-    content: emptyContent,
-  },
-  {
-    slug: "instagram-business",
-    order: 4,
-    title: "Instagram Business",
-    summary: "Setup profil, bio, highlight, jadwal posting, dan reels.",
-    status: "draft",
-    content: emptyContent,
-  },
-  {
-    slug: "google-forms",
-    order: 5,
-    title: "Google Forms",
-    summary: "Menerima pesanan dan masukan pelanggan lewat formulir online.",
-    status: "draft",
-    content: emptyContent,
-  },
-  {
-    slug: "qris",
-    order: 6,
-    title: "QRIS",
-    summary: "Apa itu QRIS, manfaatnya, cara daftar, dan cara pelanggan membayar.",
-    status: "draft",
-    content: emptyContent,
-  },
-  {
-    slug: "ai-untuk-umkm",
-    order: 7,
-    title: "AI untuk UMKM",
-    summary:
-      "Apa yang bisa dibantu AI: menulis caption, deskripsi produk, dan ide promosi.",
-    status: "draft",
-    content: emptyContent,
-  },
-];
-
-export function getPublishedModules(): LearningModule[] {
-  return MODULES.filter((mod) => mod.status === "published").sort(
-    (a, b) => a.order - b.order
-  );
+function toLearningModule(row: ModuleRow): LearningModule {
+  return {
+    slug: row.slug,
+    order: row.order,
+    title: row.title,
+    summary: row.summary,
+    status: row.status === "published" ? "published" : "draft",
+    coverImage: row.coverImage,
+    content: {
+      whatIsIt: row.whatIsIt,
+      whyUseful: row.whyUseful,
+      steps: (row.steps as unknown as ModuleStep[]) ?? [],
+      tips: (row.tips as unknown as string[]) ?? [],
+      commonMistakes: (row.commonMistakes as unknown as string[]) ?? [],
+      usefulLinks: (row.usefulLinks as unknown as ModuleLink[]) ?? [],
+    },
+  };
 }
 
-export function getModuleBySlug(slug: string): LearningModule | undefined {
-  return MODULES.find((mod) => mod.slug === slug);
+export async function getAllModules(): Promise<LearningModule[]> {
+  const rows = await prisma.module.findMany({ orderBy: { order: "asc" } });
+  return rows.map(toLearningModule);
+}
+
+export async function getPublishedModules(): Promise<LearningModule[]> {
+  const rows = await prisma.module.findMany({
+    where: { status: "published" },
+    orderBy: { order: "asc" },
+  });
+  return rows.map(toLearningModule);
+}
+
+export async function getModuleBySlug(
+  slug: string
+): Promise<LearningModule | null> {
+  const row = await prisma.module.findUnique({ where: { slug } });
+  return row ? toLearningModule(row) : null;
+}
+
+export async function getModuleByOrder(
+  order: number
+): Promise<LearningModule | null> {
+  const row = await prisma.module.findFirst({ where: { order } });
+  return row ? toLearningModule(row) : null;
 }

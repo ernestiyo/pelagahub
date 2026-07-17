@@ -15,8 +15,9 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return getPublishedModules()
+export async function generateStaticParams() {
+  const modules = await getPublishedModules();
+  return modules
     .filter((mod) => !CUSTOM_MODULE_SLUGS.includes(mod.slug))
     .map((mod) => ({ slug: mod.slug }));
 }
@@ -25,7 +26,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const mod = getModuleBySlug(slug);
+  const mod = await getModuleBySlug(slug);
   if (!mod) return {};
 
   return {
@@ -36,7 +37,7 @@ export async function generateMetadata({
 
 export default async function ModuleDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const mod = getModuleBySlug(slug);
+  const mod = await getModuleBySlug(slug);
 
   if (!mod || mod.status !== "published") {
     notFound();

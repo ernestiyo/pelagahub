@@ -10,8 +10,8 @@ export const metadata: Metadata = {
     "Semua modul belajar digitalisasi usaha untuk pelaku UMKM Desa Pelaga.",
 };
 
-export default function ModulListPage() {
-  const modules = getPublishedModules();
+export default async function ModulListPage() {
+  const modules = await getPublishedModules();
 
   return (
     <main className="flex-1 bg-slate-50 py-12 sm:py-16">

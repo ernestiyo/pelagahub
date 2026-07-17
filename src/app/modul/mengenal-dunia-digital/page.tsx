@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   Globe,
   Sparkles,
@@ -21,7 +22,7 @@ import { SelfCheckChecklist } from "@/components/modul1/SelfCheckChecklist";
 import { MiniChallenge } from "@/components/modul1/MiniChallenge";
 import { DidYouKnow } from "@/components/modul1/DidYouKnow";
 import { NextModulePreview } from "@/components/modul1/NextModulePreview";
-import { MODULES, getModuleBySlug } from "@/lib/modules";
+import { getModuleByOrder, getModuleBySlug } from "@/lib/modules";
 import {
   flipCards,
   benefits,
@@ -40,9 +41,10 @@ export const metadata: Metadata = {
     "Kenapa digitalisasi penting untuk usaha Anda, dan langkah pertama yang bisa langsung dicoba hari ini.",
 };
 
-export default function Modul1Page() {
-  const mod = getModuleBySlug("mengenal-dunia-digital")!;
-  const next = MODULES.find((m) => m.order === mod.order + 1);
+export default async function Modul1Page() {
+  const mod = await getModuleBySlug("mengenal-dunia-digital");
+  if (!mod) notFound();
+  const next = await getModuleByOrder(mod.order + 1);
 
   const flipCardItems = flipCards.map((card) => ({
     front: card.front,
@@ -149,7 +151,7 @@ export default function Modul1Page() {
 
         <DidYouKnow facts={funFacts} />
 
-        <NextModulePreview next={next} />
+        <NextModulePreview next={next ?? undefined} />
       </Container>
     </main>
   );
