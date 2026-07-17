@@ -43,6 +43,14 @@ export default async function ModuleDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const hasContent =
+    mod.content.whatIsIt.trim() ||
+    mod.content.whyUseful.trim() ||
+    mod.content.steps.length > 0 ||
+    mod.content.tips.length > 0 ||
+    mod.content.commonMistakes.length > 0 ||
+    mod.content.usefulLinks.length > 0;
+
   return (
     <main className="flex-1 bg-slate-50 py-12 sm:py-16">
       <Container className="mx-auto flex max-w-3xl flex-col gap-8">
@@ -62,57 +70,67 @@ export default async function ModuleDetailPage({ params }: PageProps) {
           <p className="mt-3 text-lg text-slate-600">{mod.summary}</p>
         </div>
 
-        <Section title="Apa Itu?">
-          <Paragraphs text={mod.content.whatIsIt} />
-        </Section>
+        {mod.content.whatIsIt.trim() && (
+          <Section title="Apa Itu?">
+            <Paragraphs text={mod.content.whatIsIt} />
+          </Section>
+        )}
 
-        <Section title="Kenapa Berguna?">
-          <Paragraphs text={mod.content.whyUseful} />
-        </Section>
+        {mod.content.whyUseful.trim() && (
+          <Section title="Kenapa Berguna?">
+            <Paragraphs text={mod.content.whyUseful} />
+          </Section>
+        )}
 
-        <Section title="Cara Memulai">
-          <ol className="flex flex-col gap-5">
-            {mod.content.steps.map((step, i) => (
-              <li key={step.title} className="flex gap-4">
-                <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-600 text-sm font-bold text-white">
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="font-bold text-slate-900">{step.title}</p>
-                  <p className="mt-1 text-slate-600">{step.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Section>
+        {mod.content.steps.length > 0 && (
+          <Section title="Cara Memulai">
+            <ol className="flex flex-col gap-5">
+              {mod.content.steps.map((step, i) => (
+                <li key={step.title} className="flex gap-4">
+                  <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-600 text-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-bold text-slate-900">{step.title}</p>
+                    <p className="mt-1 text-slate-600">{step.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Section>
+        )}
 
-        <Section title="Tips">
-          <ul className="flex flex-col gap-3">
-            {mod.content.tips.map((tip) => (
-              <li key={tip} className="flex gap-3 text-slate-700">
-                <Check
-                  className="mt-0.5 h-4 w-4 flex-none text-accent-600"
-                  strokeWidth={2.5}
-                />
-                <span>{tip}</span>
-              </li>
-            ))}
-          </ul>
-        </Section>
+        {mod.content.tips.length > 0 && (
+          <Section title="Tips">
+            <ul className="flex flex-col gap-3">
+              {mod.content.tips.map((tip) => (
+                <li key={tip} className="flex gap-3 text-slate-700">
+                  <Check
+                    className="mt-0.5 h-4 w-4 flex-none text-accent-600"
+                    strokeWidth={2.5}
+                  />
+                  <span>{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
 
-        <Section title="Kesalahan Umum">
-          <ul className="flex flex-col gap-3">
-            {mod.content.commonMistakes.map((mistake) => (
-              <li key={mistake} className="flex gap-3 text-slate-700">
-                <X
-                  className="mt-0.5 h-4 w-4 flex-none text-slate-400"
-                  strokeWidth={2.5}
-                />
-                <span>{mistake}</span>
-              </li>
-            ))}
-          </ul>
-        </Section>
+        {mod.content.commonMistakes.length > 0 && (
+          <Section title="Kesalahan Umum">
+            <ul className="flex flex-col gap-3">
+              {mod.content.commonMistakes.map((mistake) => (
+                <li key={mistake} className="flex gap-3 text-slate-700">
+                  <X
+                    className="mt-0.5 h-4 w-4 flex-none text-slate-400"
+                    strokeWidth={2.5}
+                  />
+                  <span>{mistake}</span>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
 
         {mod.content.usefulLinks.length > 0 && (
           <Section title="Link Berguna">
@@ -131,6 +149,12 @@ export default async function ModuleDetailPage({ params }: PageProps) {
               ))}
             </ul>
           </Section>
+        )}
+
+        {!hasContent && (
+          <Card className="text-center text-slate-500">
+            Konten modul ini sedang disiapkan. Silakan kembali lagi nanti.
+          </Card>
         )}
       </Container>
     </main>

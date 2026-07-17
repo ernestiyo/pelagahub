@@ -240,28 +240,31 @@ function StepListEditor({
           key={i}
           className="flex flex-col gap-2 rounded-xl border border-slate-200 p-3"
         >
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Judul langkah"
-              value={step.title}
-              onChange={(e) =>
-                onChange(
-                  steps.map((s, idx) =>
-                    idx === i ? { ...s, title: e.target.value } : s
-                  )
-                )
-              }
-              className={inputClass}
-            />
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-slate-400">
+              Langkah {i + 1}
+            </span>
             <button
               type="button"
               onClick={() => onChange(steps.filter((_, idx) => idx !== i))}
-              className="flex-none rounded-lg px-2 py-2 text-sm font-semibold text-slate-400 hover:bg-slate-100 hover:text-red-600"
+              className="flex-none rounded-lg px-2 py-1 text-sm font-semibold text-slate-400 hover:bg-slate-100 hover:text-red-600"
             >
               Hapus
             </button>
           </div>
+          <input
+            type="text"
+            placeholder="Judul langkah"
+            value={step.title}
+            onChange={(e) =>
+              onChange(
+                steps.map((s, idx) =>
+                  idx === i ? { ...s, title: e.target.value } : s
+                )
+              )
+            }
+            className={inputClass}
+          />
           <textarea
             placeholder="Penjelasan langkah ini"
             rows={2}
@@ -346,7 +349,22 @@ function LinkListEditor({
     <div className="flex flex-col gap-3">
       <p className={labelClass}>Link Berguna (opsional)</p>
       {links.map((link, i) => (
-        <div key={i} className="flex items-center gap-2">
+        <div
+          key={i}
+          className="flex flex-col gap-2 rounded-xl border border-slate-200 p-3"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-slate-400">
+              Link {i + 1}
+            </span>
+            <button
+              type="button"
+              onClick={() => onChange(links.filter((_, idx) => idx !== i))}
+              className="flex-none rounded-lg px-2 py-1 text-sm font-semibold text-slate-400 hover:bg-slate-100 hover:text-red-600"
+            >
+              Hapus
+            </button>
+          </div>
           <input
             type="text"
             placeholder="Judul link"
@@ -373,13 +391,6 @@ function LinkListEditor({
             }
             className={inputClass}
           />
-          <button
-            type="button"
-            onClick={() => onChange(links.filter((_, idx) => idx !== i))}
-            className="flex-none rounded-lg px-2 py-2 text-sm font-semibold text-slate-400 hover:bg-slate-100 hover:text-red-600"
-          >
-            Hapus
-          </button>
         </div>
       ))}
       <button

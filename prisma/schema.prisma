@@ -6,14 +6,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 // status is a plain String ("draft" | "published") rather than a Prisma
-// enum because SQLite doesn't support native enums; enforced at the
-// application layer. Kept as String even after migrating to Postgres
-// later so no further schema migration is needed.
+// enum, enforced at the application layer instead — kept this way even on
+// Postgres for simplicity (adding values later needs no migration).
 model Module {
   id     String @id @default(cuid())
   slug   String @unique
