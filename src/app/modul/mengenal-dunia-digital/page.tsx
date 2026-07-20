@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 
 export default async function Modul1Page() {
   const mod = await getModuleBySlug("mengenal-dunia-digital");
-  if (!mod) notFound();
+  if (!mod || mod.status !== "published") notFound();
   const next = await getModuleByOrder(mod.order + 1);
 
   const flipCardItems = flipCards.map((card) => ({

@@ -65,7 +65,7 @@ export async function createModuleAction(
 
   await prisma.module.create({ data });
   revalidatePath("/admin");
-  revalidatePath("/modul");
+  revalidatePath("/modul", "layout");
   redirect("/admin");
 }
 
@@ -91,9 +91,7 @@ export async function updateModuleAction(
 
   await prisma.module.update({ where: { slug: originalSlug }, data });
   revalidatePath("/admin");
-  revalidatePath("/modul");
-  revalidatePath(`/modul/${originalSlug}`);
-  revalidatePath(`/modul/${data.slug}`);
+  revalidatePath("/modul", "layout");
   redirect("/admin");
 }
 
@@ -106,7 +104,7 @@ export async function deleteModuleAction(slug: string) {
 
   await prisma.module.delete({ where: { slug } });
   revalidatePath("/admin");
-  revalidatePath("/modul");
+  revalidatePath("/modul", "layout");
 }
 
 export async function toggleModuleStatusAction(
@@ -116,6 +114,5 @@ export async function toggleModuleStatusAction(
   const nextStatus = currentStatus === "published" ? "draft" : "published";
   await prisma.module.update({ where: { slug }, data: { status: nextStatus } });
   revalidatePath("/admin");
-  revalidatePath("/modul");
-  revalidatePath(`/modul/${slug}`);
+  revalidatePath("/modul", "layout");
 }
