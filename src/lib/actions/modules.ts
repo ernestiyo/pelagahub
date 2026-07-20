@@ -27,8 +27,9 @@ function readModuleFormData(formData: FormData) {
   const order = Number(formData.get("order") ?? 0) || 0;
   const status = formData.get("status") === "published" ? "published" : "draft";
   const coverImage = String(formData.get("coverImage") ?? "").trim() || null;
+  const estimatedTime = String(formData.get("estimatedTime") ?? "").trim();
   const whatIsIt = String(formData.get("whatIsIt") ?? "").trim();
-  const whyUseful = String(formData.get("whyUseful") ?? "").trim();
+  const analogy = String(formData.get("analogy") ?? "").trim();
 
   return {
     title,
@@ -37,12 +38,15 @@ function readModuleFormData(formData: FormData) {
     order,
     status,
     coverImage,
+    estimatedTime,
     whatIsIt,
-    whyUseful,
-    steps: parseJsonArray(formData.get("steps")),
-    tips: parseJsonArray(formData.get("tips")),
+    analogy,
+    learningObjectives: parseJsonArray(formData.get("learningObjectives")),
+    openingStory: parseJsonArray(formData.get("openingStory")),
+    benefits: parseJsonArray(formData.get("benefits")),
+    lessons: parseJsonArray(formData.get("lessons")),
     commonMistakes: parseJsonArray(formData.get("commonMistakes")),
-    usefulLinks: parseJsonArray(formData.get("usefulLinks")),
+    miniChallenge: parseJsonArray(formData.get("miniChallenge")),
   };
 }
 

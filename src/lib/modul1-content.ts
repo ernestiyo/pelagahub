@@ -7,7 +7,6 @@ import {
   Clock,
   HeartHandshake,
   Coffee,
-  Home,
   type LucideIcon,
 } from "lucide-react";
 
@@ -91,12 +90,12 @@ export const beforeAfterRows: BeforeAfterRow[] = [
 export interface StoryStep {
   label: string;
   text: string;
+  image: string | null;
 }
 
 export interface StoryData {
   icon: LucideIcon;
   title: string;
-  image: string | null;
   steps: StoryStep[];
 }
 
@@ -104,21 +103,22 @@ export const successStories: StoryData[] = [
   {
     icon: Coffee,
     title: "Coffee Shop",
-    image: "/hero/kiadan_coffee.jpg",
     steps: [
-      { label: "Before", text: "Mengandalkan pelanggan sekitar." },
-      { label: "After", text: "Menggunakan Google Maps dan Instagram." },
-      { label: "Result", text: "Lebih mudah ditemukan wisatawan." },
-    ],
-  },
-  {
-    icon: Home,
-    title: "Homestay",
-    image: null,
-    steps: [
-      { label: "Before", text: "Sulit ditemukan wisatawan." },
-      { label: "After", text: "Mulai hadir secara digital." },
-      { label: "Result", text: "Lebih mudah ditemukan dan dihubungi." },
+      {
+        label: "Before",
+        text: "Mengandalkan pelanggan sekitar.",
+        image: "/hero/kiadan_coffee.jpg",
+      },
+      {
+        label: "After",
+        text: "Menggunakan Google Maps dan Instagram.",
+        image: "/hero/kiadan_coffee.jpg",
+      },
+      {
+        label: "Result",
+        text: "Lebih mudah ditemukan wisatawan.",
+        image: "/hero/kiadan_coffee.jpg",
+      },
     ],
   },
 ];

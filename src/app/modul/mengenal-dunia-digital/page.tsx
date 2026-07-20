@@ -56,7 +56,6 @@ export default async function Modul1Page() {
 
   const storyItems = successStories.map((story) => ({
     title: story.title,
-    image: story.image,
     steps: story.steps,
     iconLarge: (
       <story.icon className="h-8 w-8 text-primary-400" strokeWidth={1.5} />
@@ -121,7 +120,7 @@ export default async function Modul1Page() {
           tone="primary"
           numeral="04"
           title="Cerita Sukses"
-          description="Dua usaha di Desa Pelaga yang sudah mulai go digital."
+          description="Kisah nyata usaha di Desa Pelaga yang sudah mulai go digital."
         >
           <SuccessStories stories={storyItems} />
         </ModuleHighlight>

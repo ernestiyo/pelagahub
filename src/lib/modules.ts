@@ -4,22 +4,45 @@ import type { Module as ModuleRow } from "@prisma/client";
 export type ModuleStatus = "draft" | "published";
 
 export interface ModuleStep {
+  instruction: string;
+  tip: string;
+  image: string | null;
+}
+
+export interface ModuleLesson {
+  title: string;
+  intro: string;
+  steps: ModuleStep[];
+  example: string;
+  tip: string;
+}
+
+export interface StoryLine {
+  speaker: string;
+  message: string;
+}
+
+export interface BenefitCard {
   title: string;
   description: string;
 }
 
-export interface ModuleLink {
-  label: string;
-  url: string;
+export interface ModuleMistake {
+  mistake: string;
+  consequence: string;
+  fix: string;
 }
 
 export interface ModuleContent {
+  estimatedTime: string;
+  learningObjectives: string[];
+  openingStory: StoryLine[];
+  benefits: BenefitCard[];
   whatIsIt: string;
-  whyUseful: string;
-  steps: ModuleStep[];
-  tips: string[];
-  commonMistakes: string[];
-  usefulLinks: ModuleLink[];
+  analogy: string;
+  lessons: ModuleLesson[];
+  commonMistakes: ModuleMistake[];
+  miniChallenge: string[];
 }
 
 export interface LearningModule {
@@ -32,8 +55,8 @@ export interface LearningModule {
   content: ModuleContent;
 }
 
-// Modul dengan halaman detail custom (bukan lewat template generik 6-bagian
-// di /modul/[slug]) — punya route statis sendiri yang override [slug].
+// Modul dengan halaman detail custom (bukan lewat template generik di
+// /modul/[slug]) — punya route statis sendiri yang override [slug].
 export const CUSTOM_MODULE_SLUGS = ["mengenal-dunia-digital"];
 
 function toLearningModule(row: ModuleRow): LearningModule {
@@ -45,12 +68,16 @@ function toLearningModule(row: ModuleRow): LearningModule {
     status: row.status === "published" ? "published" : "draft",
     coverImage: row.coverImage,
     content: {
+      estimatedTime: row.estimatedTime,
+      learningObjectives:
+        (row.learningObjectives as unknown as string[]) ?? [],
+      openingStory: (row.openingStory as unknown as StoryLine[]) ?? [],
+      benefits: (row.benefits as unknown as BenefitCard[]) ?? [],
       whatIsIt: row.whatIsIt,
-      whyUseful: row.whyUseful,
-      steps: (row.steps as unknown as ModuleStep[]) ?? [],
-      tips: (row.tips as unknown as string[]) ?? [],
-      commonMistakes: (row.commonMistakes as unknown as string[]) ?? [],
-      usefulLinks: (row.usefulLinks as unknown as ModuleLink[]) ?? [],
+      analogy: row.analogy,
+      lessons: (row.lessons as unknown as ModuleLesson[]) ?? [],
+      commonMistakes: (row.commonMistakes as unknown as ModuleMistake[]) ?? [],
+      miniChallenge: (row.miniChallenge as unknown as string[]) ?? [],
     },
   };
 }
