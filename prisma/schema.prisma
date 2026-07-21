@@ -26,16 +26,15 @@ model Module {
   estimatedTime String @default("")
 
   // Struktur modul (lihat MODULE_GUIDELINES.md): objective checklist,
-  // opening story (bubble percakapan), benefit cards, apa-itu + analogi,
-  // lessons (kelompok langkah bernama), kesalahan umum, mini challenge.
-  learningObjectives Json   @default("[]")
-  openingStory       Json   @default("[]")
-  benefits           Json   @default("[]")
-  whatIsIt           String @default("")
-  analogy            String @default("")
-  lessons            Json   @default("[]")
-  commonMistakes     Json   @default("[]")
-  miniChallenge      Json   @default("[]")
+  // opening story (bubble percakapan), benefit cards, lessons, mini
+  // challenge. Tiap lesson di dalam `lessons` membawa field-nya sendiri:
+  // apa-itu + analogi, langkah-langkah, contoh nyata, tips, dan
+  // kesalahan yang sering terjadi (lihat ModuleLesson di src/lib/modules.ts).
+  learningObjectives Json @default("[]")
+  openingStory       Json @default("[]")
+  benefits           Json @default("[]")
+  lessons            Json @default("[]")
+  miniChallenge      Json @default("[]")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

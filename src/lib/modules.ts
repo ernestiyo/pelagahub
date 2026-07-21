@@ -9,12 +9,23 @@ export interface ModuleStep {
   image: string | null;
 }
 
+export interface ModuleMistake {
+  mistake: string;
+  consequence: string;
+  fix: string;
+}
+
+// Tiap lesson membawa strukturnya sendiri (Apa Itu?, Tutorial, Contoh
+// Nyata, Tips, Kesalahan yang Sering Terjadi) sesuai Module Guidelines —
+// bukan section terpisah di level modul.
 export interface ModuleLesson {
   title: string;
-  intro: string;
+  whatIsIt: string;
+  analogy: string;
   steps: ModuleStep[];
   example: string;
   tip: string;
+  mistakes: ModuleMistake[];
 }
 
 export interface StoryLine {
@@ -27,21 +38,12 @@ export interface BenefitCard {
   description: string;
 }
 
-export interface ModuleMistake {
-  mistake: string;
-  consequence: string;
-  fix: string;
-}
-
 export interface ModuleContent {
   estimatedTime: string;
   learningObjectives: string[];
   openingStory: StoryLine[];
   benefits: BenefitCard[];
-  whatIsIt: string;
-  analogy: string;
   lessons: ModuleLesson[];
-  commonMistakes: ModuleMistake[];
   miniChallenge: string[];
 }
 
@@ -73,10 +75,7 @@ function toLearningModule(row: ModuleRow): LearningModule {
         (row.learningObjectives as unknown as string[]) ?? [],
       openingStory: (row.openingStory as unknown as StoryLine[]) ?? [],
       benefits: (row.benefits as unknown as BenefitCard[]) ?? [],
-      whatIsIt: row.whatIsIt,
-      analogy: row.analogy,
       lessons: (row.lessons as unknown as ModuleLesson[]) ?? [],
-      commonMistakes: (row.commonMistakes as unknown as ModuleMistake[]) ?? [],
       miniChallenge: (row.miniChallenge as unknown as string[]) ?? [],
     },
   };

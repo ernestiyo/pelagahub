@@ -18,13 +18,14 @@ type Action = (
 ) => Promise<ModuleFormState>;
 
 const inputClass =
-  "w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100";
+  "w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition-colors duration-150 focus:border-primary-400 focus:ring-2 focus:ring-primary-100 disabled:opacity-60";
 const labelClass = "text-sm font-semibold text-slate-700";
 const removeButtonClass =
-  "flex-none rounded-lg px-2 py-1 text-sm font-semibold text-slate-400 hover:bg-slate-100 hover:text-red-600";
+  "flex-none rounded-lg px-2 py-1 text-sm font-semibold text-slate-400 transition-colors duration-150 hover:bg-slate-100 hover:text-red-600 active:scale-95 disabled:pointer-events-none disabled:opacity-40 disabled:active:scale-100";
 const addButtonClass =
-  "self-start rounded-lg px-3 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50";
-const itemBoxClass = "flex flex-col gap-2 rounded-xl border border-slate-200 p-3";
+  "self-start rounded-lg px-3 py-2 text-sm font-semibold text-primary-600 transition-colors duration-150 hover:bg-primary-50 active:scale-95 disabled:pointer-events-none disabled:opacity-40 disabled:active:scale-100";
+const itemBoxClass =
+  "animate-slide-fade flex flex-col gap-2 rounded-xl border border-slate-200 p-3";
 
 export function ModuleForm({
   action,
@@ -50,9 +51,6 @@ export function ModuleForm({
   );
   const [lessons, setLessons] = useState<ModuleLesson[]>(
     initialModule?.content.lessons ?? []
-  );
-  const [commonMistakes, setCommonMistakes] = useState<ModuleMistake[]>(
-    initialModule?.content.commonMistakes ?? []
   );
   const [miniChallenge, setMiniChallenge] = useState<string[]>(
     initialModule?.content.miniChallenge ?? []
@@ -85,6 +83,7 @@ export function ModuleForm({
               name="title"
               type="text"
               required
+              disabled={pending}
               defaultValue={initialModule?.title}
               className={inputClass}
             />
@@ -100,6 +99,7 @@ export function ModuleForm({
               name="slug"
               type="text"
               required
+              disabled={pending}
               pattern="[a-z0-9]+(-[a-z0-9]+)*"
               defaultValue={initialModule?.slug}
               className={inputClass}
@@ -113,6 +113,7 @@ export function ModuleForm({
               type="number"
               min={1}
               required
+              disabled={pending}
               defaultValue={initialModule?.order ?? defaultOrder}
               className={inputClass}
             />
@@ -122,6 +123,7 @@ export function ModuleForm({
             <select
               id="status"
               name="status"
+              disabled={pending}
               defaultValue={initialModule?.status ?? "draft"}
               className={inputClass}
             >
@@ -141,6 +143,7 @@ export function ModuleForm({
             name="summary"
             rows={2}
             required
+            disabled={pending}
             defaultValue={initialModule?.summary}
             className={inputClass}
           />
@@ -155,6 +158,7 @@ export function ModuleForm({
             id="coverImage"
             name="coverImage"
             type="text"
+            disabled={pending}
             defaultValue={initialModule?.coverImage ?? ""}
             className={inputClass}
           />
@@ -178,6 +182,7 @@ export function ModuleForm({
             id="estimatedTime"
             name="estimatedTime"
             type="text"
+            disabled={pending}
             defaultValue={initialModule?.content.estimatedTime}
             className={inputClass}
           />
@@ -189,6 +194,7 @@ export function ModuleForm({
           onChange={setLearningObjectives}
           addLabel="+ Tambah Poin"
           placeholder="Contoh: Membuat profil usaha"
+          disabled={pending}
         />
       </section>
 
@@ -201,7 +207,11 @@ export function ModuleForm({
             Pelanggan/Pemilik) atau narasi biasa (kosongkan &quot;Tokoh&quot;).
           </p>
         </div>
-        <StoryEditor lines={openingStory} onChange={setOpeningStory} />
+        <StoryEditor
+          lines={openingStory}
+          onChange={setOpeningStory}
+          disabled={pending}
+        />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -211,39 +221,11 @@ export function ModuleForm({
           </h2>
           <p className="text-sm text-slate-500">3–5 kartu manfaat singkat.</p>
         </div>
-        <BenefitsEditor benefits={benefits} onChange={setBenefits} />
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-bold text-slate-900">Apa Itu?</h2>
-
-        <Field
-          label="Penjelasan Sederhana"
-          htmlFor="whatIsIt"
-          hint="Gunakan bahasa sehari-hari, hindari istilah teknis tanpa penjelasan."
-        >
-          <textarea
-            id="whatIsIt"
-            name="whatIsIt"
-            rows={3}
-            defaultValue={initialModule?.content.whatIsIt}
-            className={inputClass}
-          />
-        </Field>
-
-        <Field
-          label="Analogi (opsional)"
-          htmlFor="analogy"
-          hint='Contoh: "Bagaikan papan nama digital yang dapat dilihat semua orang."'
-        >
-          <input
-            id="analogy"
-            name="analogy"
-            type="text"
-            defaultValue={initialModule?.content.analogy}
-            className={inputClass}
-          />
-        </Field>
+        <BenefitsEditor
+          benefits={benefits}
+          onChange={setBenefits}
+          disabled={pending}
+        />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -254,23 +236,14 @@ export function ModuleForm({
           <p className="text-sm text-slate-500">
             Kelompokkan langkah-langkah jadi beberapa lesson (mis. &quot;Instalasi&quot;,
             &quot;Katalog Produk&quot;). Untuk modul sederhana, cukup buat satu lesson.
+            Tiap lesson punya bagiannya sendiri: Apa Itu, Langkah-langkah,
+            Contoh Nyata, Tips, dan Kesalahan yang Sering Terjadi.
           </p>
         </div>
-        <LessonListEditor lessons={lessons} onChange={setLessons} />
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900">
-            Kesalahan yang Sering Terjadi
-          </h2>
-          <p className="text-sm text-slate-500">
-            Format: Kesalahan → Akibatnya → Cara memperbaiki.
-          </p>
-        </div>
-        <MistakeListEditor
-          mistakes={commonMistakes}
-          onChange={setCommonMistakes}
+        <LessonListEditor
+          lessons={lessons}
+          onChange={setLessons}
+          disabled={pending}
         />
       </section>
 
@@ -287,6 +260,7 @@ export function ModuleForm({
           onChange={setMiniChallenge}
           addLabel="+ Tambah Item"
           placeholder="Contoh: Upload satu foto produk"
+          disabled={pending}
         />
       </section>
 
@@ -303,11 +277,6 @@ export function ModuleForm({
       />
       <input type="hidden" name="benefits" value={JSON.stringify(benefits)} />
       <input type="hidden" name="lessons" value={JSON.stringify(lessons)} />
-      <input
-        type="hidden"
-        name="commonMistakes"
-        value={JSON.stringify(commonMistakes)}
-      />
       <input
         type="hidden"
         name="miniChallenge"
@@ -349,22 +318,25 @@ function TextListEditor({
   onChange,
   addLabel,
   placeholder,
+  disabled = false,
 }: {
   label: string;
   items: string[];
   onChange: (items: string[]) => void;
   addLabel: string;
   placeholder: string;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-3">
       <p className={labelClass}>{label}</p>
       {items.map((item, i) => (
-        <div key={i} className="flex items-center gap-2">
+        <div key={i} className="animate-slide-fade flex items-center gap-2">
           <input
             type="text"
             placeholder={placeholder}
             value={item}
+            disabled={disabled}
             onChange={(e) =>
               onChange(items.map((it, idx) => (idx === i ? e.target.value : it)))
             }
@@ -372,6 +344,7 @@ function TextListEditor({
           />
           <button
             type="button"
+            disabled={disabled}
             onClick={() => onChange(items.filter((_, idx) => idx !== i))}
             className={removeButtonClass}
           >
@@ -381,6 +354,7 @@ function TextListEditor({
       ))}
       <button
         type="button"
+        disabled={disabled}
         onClick={() => onChange([...items, ""])}
         className={addButtonClass}
       >
@@ -393,9 +367,11 @@ function TextListEditor({
 function StoryEditor({
   lines,
   onChange,
+  disabled = false,
 }: {
   lines: StoryLine[];
   onChange: (lines: StoryLine[]) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -407,6 +383,7 @@ function StoryEditor({
             </span>
             <button
               type="button"
+              disabled={disabled}
               onClick={() => onChange(lines.filter((_, idx) => idx !== i))}
               className={removeButtonClass}
             >
@@ -417,6 +394,7 @@ function StoryEditor({
             type="text"
             placeholder="Tokoh (kosongkan untuk narasi), contoh: Pelanggan"
             value={line.speaker}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 lines.map((l, idx) =>
@@ -430,6 +408,7 @@ function StoryEditor({
             placeholder="Isi percakapan atau narasi"
             rows={2}
             value={line.message}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 lines.map((l, idx) =>
@@ -443,6 +422,7 @@ function StoryEditor({
       ))}
       <button
         type="button"
+        disabled={disabled}
         onClick={() =>
           onChange([...lines, { speaker: "", message: "" }])
         }
@@ -457,9 +437,11 @@ function StoryEditor({
 function BenefitsEditor({
   benefits,
   onChange,
+  disabled = false,
 }: {
   benefits: BenefitCard[];
   onChange: (benefits: BenefitCard[]) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -471,6 +453,7 @@ function BenefitsEditor({
             </span>
             <button
               type="button"
+              disabled={disabled}
               onClick={() => onChange(benefits.filter((_, idx) => idx !== i))}
               className={removeButtonClass}
             >
@@ -481,6 +464,7 @@ function BenefitsEditor({
             type="text"
             placeholder="Judul singkat, contoh: Toko Lebih Profesional"
             value={benefit.title}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 benefits.map((b, idx) =>
@@ -494,6 +478,7 @@ function BenefitsEditor({
             placeholder="Penjelasan singkat manfaat ini"
             rows={2}
             value={benefit.description}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 benefits.map((b, idx) =>
@@ -507,6 +492,7 @@ function BenefitsEditor({
       ))}
       <button
         type="button"
+        disabled={disabled}
         onClick={() => onChange([...benefits, { title: "", description: "" }])}
         className={addButtonClass}
       >
@@ -519,9 +505,11 @@ function BenefitsEditor({
 function MistakeListEditor({
   mistakes,
   onChange,
+  disabled = false,
 }: {
   mistakes: ModuleMistake[];
   onChange: (mistakes: ModuleMistake[]) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -533,6 +521,7 @@ function MistakeListEditor({
             </span>
             <button
               type="button"
+              disabled={disabled}
               onClick={() => onChange(mistakes.filter((_, idx) => idx !== i))}
               className={removeButtonClass}
             >
@@ -543,6 +532,7 @@ function MistakeListEditor({
             type="text"
             placeholder="Kesalahan, contoh: Foto buram"
             value={mistake.mistake}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 mistakes.map((m, idx) =>
@@ -556,6 +546,7 @@ function MistakeListEditor({
             type="text"
             placeholder="Akibatnya, contoh: Produk terlihat kurang menarik"
             value={mistake.consequence}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 mistakes.map((m, idx) =>
@@ -569,6 +560,7 @@ function MistakeListEditor({
             type="text"
             placeholder="Cara memperbaiki, contoh: Gunakan cahaya alami"
             value={mistake.fix}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 mistakes.map((m, idx) =>
@@ -582,6 +574,7 @@ function MistakeListEditor({
       ))}
       <button
         type="button"
+        disabled={disabled}
         onClick={() =>
           onChange([...mistakes, { mistake: "", consequence: "", fix: "" }])
         }
@@ -596,9 +589,11 @@ function MistakeListEditor({
 function LessonListEditor({
   lessons,
   onChange,
+  disabled = false,
 }: {
   lessons: ModuleLesson[];
   onChange: (lessons: ModuleLesson[]) => void;
+  disabled?: boolean;
 }) {
   function updateLesson(i: number, patch: Partial<ModuleLesson>) {
     onChange(
@@ -613,7 +608,7 @@ function LessonListEditor({
       {lessons.map((lesson, i) => (
         <div
           key={i}
-          className="flex flex-col gap-3 rounded-xl border border-slate-200 p-4"
+          className="animate-slide-fade flex flex-col gap-3 rounded-xl border border-slate-200 p-4"
         >
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-bold text-slate-500">
@@ -621,6 +616,7 @@ function LessonListEditor({
             </span>
             <button
               type="button"
+              disabled={disabled}
               onClick={() => onChange(lessons.filter((_, idx) => idx !== i))}
               className={removeButtonClass}
             >
@@ -632,26 +628,42 @@ function LessonListEditor({
             type="text"
             placeholder="Judul lesson, contoh: Instalasi"
             value={lesson.title}
+            disabled={disabled}
             onChange={(e) => updateLesson(i, { title: e.target.value })}
             className={inputClass}
           />
-          <textarea
-            placeholder="Intro/pengantar singkat lesson ini (opsional)"
-            rows={2}
-            value={lesson.intro}
-            onChange={(e) => updateLesson(i, { intro: e.target.value })}
-            className={inputClass}
-          />
+
+          <div className="flex flex-col gap-2 rounded-xl bg-slate-50 p-3">
+            <p className={labelClass}>Apa Itu?</p>
+            <textarea
+              placeholder="Penjelasan sederhana, gunakan bahasa sehari-hari"
+              rows={2}
+              value={lesson.whatIsIt}
+              disabled={disabled}
+              onChange={(e) => updateLesson(i, { whatIsIt: e.target.value })}
+              className={inputClass}
+            />
+            <input
+              type="text"
+              placeholder='Analogi (opsional), contoh: "Seperti dompet digital..."'
+              value={lesson.analogy}
+              disabled={disabled}
+              onChange={(e) => updateLesson(i, { analogy: e.target.value })}
+              className={inputClass}
+            />
+          </div>
 
           <StepListEditor
             steps={lesson.steps}
             onChange={(steps) => updateLesson(i, { steps })}
+            disabled={disabled}
           />
 
           <textarea
             placeholder="Contoh Nyata (opsional) — sesuatu yang bisa langsung ditiru"
             rows={2}
             value={lesson.example}
+            disabled={disabled}
             onChange={(e) => updateLesson(i, { example: e.target.value })}
             className={inputClass}
           />
@@ -659,17 +671,36 @@ function LessonListEditor({
             placeholder="💡 Tips singkat untuk lesson ini (maks. 2 kalimat, opsional)"
             rows={2}
             value={lesson.tip}
+            disabled={disabled}
             onChange={(e) => updateLesson(i, { tip: e.target.value })}
             className={inputClass}
           />
+
+          <div className="flex flex-col gap-2 rounded-xl bg-slate-50 p-3">
+            <p className={labelClass}>Kesalahan yang Sering Terjadi</p>
+            <MistakeListEditor
+              mistakes={lesson.mistakes}
+              onChange={(mistakes) => updateLesson(i, { mistakes })}
+              disabled={disabled}
+            />
+          </div>
         </div>
       ))}
       <button
         type="button"
+        disabled={disabled}
         onClick={() =>
           onChange([
             ...lessons,
-            { title: "", intro: "", steps: [], example: "", tip: "" },
+            {
+              title: "",
+              whatIsIt: "",
+              analogy: "",
+              steps: [],
+              example: "",
+              tip: "",
+              mistakes: [],
+            },
           ])
         }
         className={addButtonClass}
@@ -683,9 +714,11 @@ function LessonListEditor({
 function StepListEditor({
   steps,
   onChange,
+  disabled = false,
 }: {
   steps: ModuleStep[];
   onChange: (steps: ModuleStep[]) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-3 rounded-xl bg-slate-50 p-3">
@@ -698,6 +731,7 @@ function StepListEditor({
             </span>
             <button
               type="button"
+              disabled={disabled}
               onClick={() => onChange(steps.filter((_, idx) => idx !== i))}
               className={removeButtonClass}
             >
@@ -708,6 +742,7 @@ function StepListEditor({
             placeholder="Instruksi langkah ini"
             rows={2}
             value={step.instruction}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 steps.map((s, idx) =>
@@ -721,6 +756,7 @@ function StepListEditor({
             type="text"
             placeholder="Tips untuk langkah ini (opsional)"
             value={step.tip}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 steps.map((s, idx) =>
@@ -734,6 +770,7 @@ function StepListEditor({
             type="text"
             placeholder="URL gambar/screenshot (opsional)"
             value={step.image ?? ""}
+            disabled={disabled}
             onChange={(e) =>
               onChange(
                 steps.map((s, idx) =>
@@ -747,6 +784,7 @@ function StepListEditor({
       ))}
       <button
         type="button"
+        disabled={disabled}
         onClick={() =>
           onChange([...steps, { instruction: "", tip: "", image: null }])
         }

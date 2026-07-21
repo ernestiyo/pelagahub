@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LinkButton } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
+import { FormActionButton } from "@/components/admin/FormActionButton";
 import { getAllModules, CUSTOM_MODULE_SLUGS } from "@/lib/modules";
 import {
   deleteModuleAction,
@@ -67,7 +68,7 @@ export default async function AdminDashboardPage() {
               <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
                 <Link
                   href={`/admin/modul/${mod.slug}`}
-                  className="rounded-lg px-3 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50"
+                  className="rounded-lg px-3 py-2 text-sm font-semibold text-primary-600 transition-colors duration-150 hover:bg-primary-50 active:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
                 >
                   Edit
                 </Link>
@@ -79,19 +80,19 @@ export default async function AdminDashboardPage() {
                     mod.status
                   )}
                 >
-                  <button
-                    type="submit"
-                    className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+                  <FormActionButton
+                    pendingText="Memproses..."
+                    className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition-colors duration-150 hover:bg-slate-100 active:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
                   >
                     {isPublished ? "Unpublish" : "Publish"}
-                  </button>
+                  </FormActionButton>
                 </form>
 
                 {!isCustom && (
                   <form action={deleteModuleAction.bind(null, mod.slug)}>
                     <ConfirmSubmitButton
-                      confirmText={`Hapus modul "${mod.title}"? Tindakan ini tidak bisa dibatalkan.`}
-                      className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-400 hover:bg-slate-100 hover:text-red-600"
+                      confirmText={`Hapus modul "${mod.title}"?`}
+                      className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-400 transition-colors duration-150 hover:bg-slate-100 hover:text-red-600 active:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
                     >
                       Hapus
                     </ConfirmSubmitButton>

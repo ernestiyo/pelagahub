@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
               type="text"
               autoComplete="username"
               required
-              className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition-colors duration-150 focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
             />
           </div>
 
@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
               type="password"
               autoComplete="current-password"
               required
-              className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition-colors duration-150 focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
             />
           </div>
 

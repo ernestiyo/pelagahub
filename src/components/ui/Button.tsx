@@ -5,7 +5,7 @@ export type ButtonVariant = "cta" | "primary" | "outline";
 export type ButtonSize = "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors duration-150 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100";
 
 const variantClasses: Record<ButtonVariant, string> = {
   cta: "bg-accent-500 text-slate-900 hover:bg-accent-600 focus-visible:outline-accent-600",

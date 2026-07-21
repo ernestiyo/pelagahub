@@ -43,7 +43,7 @@ export function SuccessStories({ stories }: { stories: StoryItem[] }) {
               onClick={() => setIndex(i)}
               aria-label={`Lihat tahap ${s.label}`}
               aria-current={isFront}
-              className={`absolute inset-0 m-auto aspect-square w-[min(58%,33rem)] overflow-hidden rounded-2xl border border-slate-200 bg-primary-100 shadow-md transition-all duration-500 ease-out ${position}`}
+              className={`absolute inset-0 m-auto aspect-square w-[min(58%,33rem)] overflow-hidden rounded-2xl border border-slate-200 bg-primary-100 shadow-md transition-all duration-500 ease-out hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400 ${position}`}
             >
               {s.image ? (
                 <Image
@@ -79,8 +79,8 @@ export function SuccessStories({ stories }: { stories: StoryItem[] }) {
             onClick={() => setIndex(i)}
             aria-label={`Lihat tahap ${s.label}`}
             aria-current={i === index}
-            className={`h-2 w-2 rounded-full transition-colors ${
-              i === index ? "bg-primary-600" : "bg-slate-300"
+            className={`h-2 w-2 rounded-full transition-all duration-150 hover:scale-125 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400 ${
+              i === index ? "bg-primary-600" : "bg-slate-300 hover:bg-slate-400"
             }`}
           />
         ))}

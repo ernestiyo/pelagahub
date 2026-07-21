@@ -26,7 +26,7 @@ function FlipCardButton({ card }: { card: FlipCardItem }) {
       type="button"
       onClick={() => setFlipped((f) => !f)}
       aria-pressed={flipped}
-      className="h-44 w-full text-left [perspective:1000px]"
+      className="h-44 w-full rounded-2xl text-left [perspective:1000px] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
     >
       <div
         className={`relative h-full w-full rounded-2xl transition-transform duration-500 [transform-style:preserve-3d] ${

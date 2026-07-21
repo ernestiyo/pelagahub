@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { MiniChallenge } from "@/components/modul1/MiniChallenge";
 import { NextModulePreview } from "@/components/modul1/NextModulePreview";
+import { SlideDeck, type SlideSection } from "@/components/modul/SlideDeck";
 import {
   CUSTOM_MODULE_SLUGS,
   getModuleByOrder,
@@ -52,17 +53,99 @@ export default async function ModuleDetailPage({ params }: PageProps) {
   const next = await getModuleByOrder(mod.order + 1);
   const { content } = mod;
 
+  const slides: SlideSection[] = [];
+
+  if (content.openingStory.length > 0) {
+    slides.push({
+      id: "cerita-pembuka",
+      label: "Cerita Pembuka",
+      content: (
+        <Section title="Cerita Pembuka">
+          <StoryLines lines={content.openingStory} />
+        </Section>
+      ),
+    });
+  }
+
+  if (content.benefits.length > 0) {
+    slides.push({
+      id: "mengapa-penting",
+      label: "Mengapa Penting?",
+      content: (
+        <Section title="Mengapa Ini Penting?">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {content.benefits.map((benefit, i) => (
+              <div
+                key={benefit.title}
+                className={`rounded-2xl p-5 ${
+                  i % 2 === 0
+                    ? "bg-primary-50 text-primary-900"
+                    : "bg-accent-50 text-accent-900"
+                }`}
+              >
+                <p className="font-bold text-slate-900">{benefit.title}</p>
+                <p className="mt-1 text-sm text-slate-600">
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      ),
+    });
+  }
+
+  content.lessons.forEach((lesson, i) => {
+    slides.push({
+      id: `lesson-${i}`,
+      label: lesson.title || `Lesson ${i + 1}`,
+      content: (
+        <LessonSection
+          lesson={lesson}
+          index={i}
+          showNumber={content.lessons.length > 1}
+        />
+      ),
+    });
+  });
+
+  if (content.miniChallenge.length > 0) {
+    slides.push({
+      id: "mini-challenge",
+      label: "Mini Challenge",
+      content: (
+        <div className="relative overflow-hidden rounded-3xl bg-accent-500 p-6 sm:p-8">
+          <div className="relative">
+            <h2 className="text-xl font-bold text-accent-950">
+              Mini Challenge
+            </h2>
+            <p className="mt-1 text-sm text-accent-950/70">
+              Langsung coba sekarang, jangan ditunda.
+            </p>
+            <div className="mt-5 rounded-2xl bg-white p-5">
+              <MiniChallenge items={content.miniChallenge} />
+            </div>
+          </div>
+        </div>
+      ),
+    });
+  }
+
+  slides.push({
+    id: "modul-berikutnya",
+    label: "Modul Berikutnya",
+    content: <NextModulePreview next={next ?? undefined} />,
+  });
+
   const hasContent =
     content.openingStory.length > 0 ||
     content.benefits.length > 0 ||
-    content.whatIsIt.trim() ||
     content.lessons.length > 0 ||
-    content.commonMistakes.length > 0 ||
     content.miniChallenge.length > 0;
 
   return (
     <main className="flex-1 bg-slate-50 py-12 sm:py-16">
-      <Container className="mx-auto flex max-w-3xl flex-col gap-8">
+      <Container className="mx-auto flex max-w-4xl flex-col gap-8">
         <div className="relative overflow-hidden rounded-3xl bg-primary-700 p-6 sm:p-8">
           {mod.coverImage && (
             <Image
@@ -120,115 +203,17 @@ export default async function ModuleDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div id="belajar" className="flex flex-col gap-8">
-          {content.openingStory.length > 0 && (
-            <Section title="Cerita Pembuka">
-              <StoryLines lines={content.openingStory} />
-            </Section>
-          )}
-
-          {content.benefits.length > 0 && (
-            <Section title="Mengapa Ini Penting?">
-              <div className="grid gap-4 sm:grid-cols-2">
-                {content.benefits.map((benefit, i) => (
-                  <div
-                    key={benefit.title}
-                    className={`rounded-2xl p-5 ${
-                      i % 2 === 0
-                        ? "bg-primary-50 text-primary-900"
-                        : "bg-accent-50 text-accent-900"
-                    }`}
-                  >
-                    <p className="font-bold text-slate-900">
-                      {benefit.title}
-                    </p>
-                    <p className="mt-1 text-sm text-slate-600">
-                      {benefit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Section>
-          )}
-
-          {content.whatIsIt.trim() && (
-            <Section title="Apa Itu?">
-              <Paragraphs text={content.whatIsIt} />
-              {content.analogy && (
-                <p className="mt-4 rounded-xl border-l-4 border-accent-400 bg-accent-50 px-4 py-3 text-sm font-medium italic text-accent-900">
-                  {content.analogy}
-                </p>
-              )}
-            </Section>
-          )}
-
-          {content.lessons.map((lesson, i) => (
-            <LessonSection
-              key={lesson.title || i}
-              lesson={lesson}
-              index={i}
-              showNumber={content.lessons.length > 1}
-            />
-          ))}
-
-          {content.commonMistakes.length > 0 && (
-            <Section title="Kesalahan yang Sering Terjadi">
-              <ul className="flex flex-col gap-4">
-                {content.commonMistakes.map((item) => (
-                  <li
-                    key={item.mistake}
-                    className="rounded-xl border border-slate-200 p-4"
-                  >
-                    <p className="flex items-start gap-2 font-bold text-slate-900">
-                      <X
-                        className="mt-0.5 h-4 w-4 flex-none text-red-500"
-                        strokeWidth={2.5}
-                      />
-                      {item.mistake}
-                    </p>
-                    {item.consequence && (
-                      <p className="mt-1.5 pl-6 text-sm text-slate-600">
-                        Akibatnya: {item.consequence}
-                      </p>
-                    )}
-                    {item.fix && (
-                      <p className="mt-1 flex items-start gap-2 pl-6 text-sm font-medium text-primary-700">
-                        <CircleCheckBig
-                          className="mt-0.5 h-4 w-4 flex-none text-primary-600"
-                          strokeWidth={2}
-                        />
-                        {item.fix}
-                      </p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          )}
-
-          {content.miniChallenge.length > 0 && (
-            <div className="relative overflow-hidden rounded-3xl bg-accent-500 p-6 sm:p-8">
-              <div className="relative">
-                <h2 className="text-xl font-bold text-accent-950">
-                  Mini Challenge
-                </h2>
-                <p className="mt-1 text-sm text-accent-950/70">
-                  Langsung coba sekarang, jangan ditunda.
-                </p>
-                <div className="mt-5 rounded-2xl bg-white p-5">
-                  <MiniChallenge items={content.miniChallenge} />
-                </div>
-              </div>
+        <div id="belajar">
+          {hasContent ? (
+            <SlideDeck sections={slides} />
+          ) : (
+            <div className="flex flex-col gap-8">
+              <Card className="text-center text-slate-500">
+                Konten modul ini sedang disiapkan. Silakan kembali lagi nanti.
+              </Card>
+              <NextModulePreview next={next ?? undefined} />
             </div>
           )}
-
-          {!hasContent && (
-            <Card className="text-center text-slate-500">
-              Konten modul ini sedang disiapkan. Silakan kembali lagi nanti.
-            </Card>
-          )}
-
-          <NextModulePreview next={next ?? undefined} />
         </div>
       </Container>
     </main>
@@ -326,8 +311,15 @@ function LessonSection({
           : lesson.title || "Tutorial Langkah demi Langkah"
       }
     >
-      {lesson.intro.trim() && (
-        <p className="text-slate-600">{lesson.intro}</p>
+      {lesson.whatIsIt.trim() && (
+        <div>
+          <Paragraphs text={lesson.whatIsIt} />
+          {lesson.analogy && (
+            <p className="mt-3 rounded-xl border-l-4 border-accent-400 bg-accent-50 px-4 py-3 text-sm font-medium italic text-accent-900">
+              {lesson.analogy}
+            </p>
+          )}
+        </div>
       )}
 
       {lesson.steps.length > 0 && (
@@ -377,6 +369,44 @@ function LessonSection({
             strokeWidth={1.75}
           />
           <p className="text-sm text-accent-900">{lesson.tip}</p>
+        </div>
+      )}
+
+      {lesson.mistakes.length > 0 && (
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+            Kesalahan yang Sering Terjadi
+          </p>
+          <ul className="mt-2 flex flex-col gap-3">
+            {lesson.mistakes.map((item) => (
+              <li
+                key={item.mistake}
+                className="rounded-xl border border-slate-200 p-4"
+              >
+                <p className="flex items-start gap-2 font-bold text-slate-900">
+                  <X
+                    className="mt-0.5 h-4 w-4 flex-none text-red-500"
+                    strokeWidth={2.5}
+                  />
+                  {item.mistake}
+                </p>
+                {item.consequence && (
+                  <p className="mt-1.5 pl-6 text-sm text-slate-600">
+                    Akibatnya: {item.consequence}
+                  </p>
+                )}
+                {item.fix && (
+                  <p className="mt-1 flex items-start gap-2 pl-6 text-sm font-medium text-primary-700">
+                    <CircleCheckBig
+                      className="mt-0.5 h-4 w-4 flex-none text-primary-600"
+                      strokeWidth={2}
+                    />
+                    {item.fix}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </Section>

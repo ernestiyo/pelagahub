@@ -22,6 +22,7 @@ import { SelfCheckChecklist } from "@/components/modul1/SelfCheckChecklist";
 import { MiniChallenge } from "@/components/modul1/MiniChallenge";
 import { DidYouKnow } from "@/components/modul1/DidYouKnow";
 import { NextModulePreview } from "@/components/modul1/NextModulePreview";
+import { SlideDeck, type SlideSection } from "@/components/modul/SlideDeck";
 import { getModuleByOrder, getModuleBySlug } from "@/lib/modules";
 import {
   flipCards,
@@ -65,9 +66,111 @@ export default async function Modul1Page() {
     ),
   }));
 
+  const slides: SlideSection[] = [
+    {
+      id: "kenapa-digital",
+      label: "Kenapa Digital?",
+      content: (
+        <ModuleSection
+          icon={Globe}
+          numeral="01"
+          title="Kenapa Digitalisasi Penting?"
+          description="Klik tiap kartu untuk lihat jawabannya."
+        >
+          <FlipCards cards={flipCardItems} />
+        </ModuleSection>
+      ),
+    },
+    {
+      id: "manfaat",
+      label: "Manfaat untuk UMKM",
+      content: (
+        <ModuleSection icon={Sparkles} numeral="02" title="Manfaat untuk UMKM">
+          <BenefitCards benefits={benefits} />
+        </ModuleSection>
+      ),
+    },
+    {
+      id: "sebelum-sesudah",
+      label: "Sebelum vs Sesudah",
+      content: (
+        <ModuleSection
+          icon={RefreshCw}
+          numeral="03"
+          title="Sebelum vs Sesudah Digitalisasi"
+        >
+          <BeforeAfterComparison rows={beforeAfterRows} />
+        </ModuleSection>
+      ),
+    },
+    {
+      id: "cerita-sukses",
+      label: "Cerita Sukses",
+      content: (
+        <ModuleHighlight
+          icon={Trophy}
+          tone="primary"
+          numeral="04"
+          title="Cerita Sukses"
+          description="Kisah nyata usaha di Desa Pelaga yang sudah mulai go digital."
+        >
+          <SuccessStories stories={storyItems} />
+        </ModuleHighlight>
+      ),
+    },
+    {
+      id: "mitos-fakta",
+      label: "Mitos vs Fakta",
+      content: (
+        <ModuleSection icon={SearchCheck} numeral="05" title="Mitos vs Fakta">
+          <MythFactList pairs={mythFactPairs} />
+        </ModuleSection>
+      ),
+    },
+    {
+      id: "sudah-siap",
+      label: "Sudah Siap?",
+      content: (
+        <ModuleHighlight
+          icon={CircleCheckBig}
+          tone="accent"
+          numeral="06"
+          title="Sudah Siap Go Digital?"
+          description="Centang yang sudah Anda punya sekarang."
+        >
+          <SelfCheckChecklist items={selfCheckItems} bands={selfCheckBands} />
+        </ModuleHighlight>
+      ),
+    },
+    {
+      id: "mini-challenge",
+      label: "Mini Challenge",
+      content: (
+        <ModuleSection
+          icon={Target}
+          numeral="07"
+          title="Mini Challenge"
+          description="Lakukan satu langkah digital hari ini."
+        >
+          <MiniChallenge items={challengeItems} />
+        </ModuleSection>
+      ),
+    },
+    {
+      id: "tahukah-anda",
+      label: "Tahukah Anda?",
+      content: <DidYouKnow facts={funFacts} />,
+    },
+    {
+      id: "modul-berikutnya",
+      label: "Modul Berikutnya",
+      content: <NextModulePreview next={next ?? undefined} />,
+    },
+  ];
+
   return (
     <main className="flex-1 bg-slate-50 py-12 sm:py-16">
-      <Container className="mx-auto flex max-w-3xl flex-col gap-12 sm:gap-14">
+      <Container className="mx-auto flex max-w-4xl flex-col gap-10">
         <div className="relative overflow-hidden rounded-3xl bg-primary-700 p-6 sm:p-8">
           <span
             aria-hidden="true"
@@ -94,63 +197,7 @@ export default async function Modul1Page() {
           </div>
         </div>
 
-        <ModuleSection
-          icon={Globe}
-          numeral="01"
-          title="Kenapa Digitalisasi Penting?"
-          description="Klik tiap kartu untuk lihat jawabannya."
-        >
-          <FlipCards cards={flipCardItems} />
-        </ModuleSection>
-
-        <ModuleSection icon={Sparkles} numeral="02" title="Manfaat untuk UMKM">
-          <BenefitCards benefits={benefits} />
-        </ModuleSection>
-
-        <ModuleSection
-          icon={RefreshCw}
-          numeral="03"
-          title="Sebelum vs Sesudah Digitalisasi"
-        >
-          <BeforeAfterComparison rows={beforeAfterRows} />
-        </ModuleSection>
-
-        <ModuleHighlight
-          icon={Trophy}
-          tone="primary"
-          numeral="04"
-          title="Cerita Sukses"
-          description="Kisah nyata usaha di Desa Pelaga yang sudah mulai go digital."
-        >
-          <SuccessStories stories={storyItems} />
-        </ModuleHighlight>
-
-        <ModuleSection icon={SearchCheck} numeral="05" title="Mitos vs Fakta">
-          <MythFactList pairs={mythFactPairs} />
-        </ModuleSection>
-
-        <ModuleHighlight
-          icon={CircleCheckBig}
-          tone="accent"
-          numeral="06"
-          title="Sudah Siap Go Digital?"
-          description="Centang yang sudah Anda punya sekarang."
-        >
-          <SelfCheckChecklist items={selfCheckItems} bands={selfCheckBands} />
-        </ModuleHighlight>
-
-        <ModuleSection
-          icon={Target}
-          numeral="07"
-          title="Mini Challenge"
-          description="Lakukan satu langkah digital hari ini."
-        >
-          <MiniChallenge items={challengeItems} />
-        </ModuleSection>
-
-        <DidYouKnow facts={funFacts} />
-
-        <NextModulePreview next={next ?? undefined} />
+        <SlideDeck sections={slides} />
       </Container>
     </main>
   );
