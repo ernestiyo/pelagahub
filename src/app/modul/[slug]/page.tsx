@@ -156,6 +156,12 @@ export default async function ModuleDetailPage({ params }: PageProps) {
               sizes="768px"
             />
           )}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-10 -right-6 select-none font-mono text-[9rem] font-bold leading-none text-white/10 sm:text-[11rem]"
+          >
+            {String(mod.order).padStart(2, "0")}
+          </span>
           <div className="relative">
             <Link
               href="/modul"
